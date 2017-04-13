@@ -2,4 +2,4 @@ visitor_tracking_inbound_code.admin_settings:
   route_name: visitor_tracking_inbound_code.admin_settings
   title: 'Inbound Tracking Codes'
   description: 'Specify request keys to listen for to store tracking information about visitors.'
-  parent: system.admin_config_people
+  parent: user.admin_index

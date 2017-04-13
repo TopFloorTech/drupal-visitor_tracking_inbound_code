@@ -18,6 +18,10 @@ class InboundCodeSubscriber implements EventSubscriberInterface {
       if ($event->getRequest()->request->has($key)) {
         $set[$key] = $event->getRequest()->request->get($key);
       }
+
+      if ($event->getRequest()->query->has($key)) {
+        $set[$key] = $event->getRequest()->query->get($key);
+      }
     }
 
     if (!empty($set)) {

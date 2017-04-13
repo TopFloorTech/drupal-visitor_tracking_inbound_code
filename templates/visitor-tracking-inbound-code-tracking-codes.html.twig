@@ -1,0 +1,6 @@
+<dl>
+  {% for key, code in tracking_codes %}
+    <dt>{{ request_keys[key]|t }}</dt>
+    <dd>{{ code }}</dd>
+  {% endfor %}
+</dl>
