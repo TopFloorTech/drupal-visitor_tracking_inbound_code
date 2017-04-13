@@ -1,0 +1,117 @@
+<?php
+
+/**
+ * @file
+ * Contains visitor_tracking_inbound_code.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+// @todo Support visitor_tracking module as a data plugin.
+
+/**
+ * Implements hook_help().
+ */
+function visitor_tracking_inbound_code_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the visitor_tracking_inbound_code module.
+    case 'help.page.visitor_tracking_inbound_code':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Allows the persistent tracking of inbound URL parameters for visitors.') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+/**
+ * Implements hook_entity_presave().
+ */
+function visitor_tracking_inbound_code_entity_presave(Drupal\Core\Entity\EntityInterface $entity) {
+  $fields = visitor_tracking_inbound_code_get_tracking_fields();
+
+  if ($entity instanceof \Drupal\Core\Entity\FieldableEntityInterface) {
+    $fill_fields = [];
+
+    if (array_key_exists($entity->getEntityTypeId(), $fields)) {
+      $fill_fields += $fields[$entity->getEntityTypeId()];
+    }
+
+    if (array_key_exists('*', $fields)) {
+      $fill_fields += $fields['*'];
+    }
+
+    visitor_tracking_inbound_code_fill_fields($entity, $fill_fields);
+  }
+}
+
+function visitor_tracking_inbound_code_fill_fields(\Drupal\Core\Entity\FieldableEntityInterface $entity, $fields) {
+  $tracking_codes = visitor_tracking_inbound_code_get_active();
+
+  if (!empty($tracking_codes)) {
+    foreach ($fields as $field_name) {
+      if ($entity->hasField($field_name)) {
+        $entity->set($field_name, $tracking_codes);
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_entity_presave().
+ */
+function visitor_tracking_inbound_code_get_tracking_fields() {
+  $settings = \Drupal::config('visitor_tracking_inbound_code.settings');
+
+  $values = explode(',', $settings->get('tracking_fields'));
+
+  $fields = [];
+
+  foreach ($values as $value) {
+    $value = trim($value);
+    $entity_type = '*';
+
+    if (strpos($value, ':') !== FALSE) {
+      list($entity_type, $value) = explode(':', $value);
+    }
+
+    $fields[$entity_type][] = $value;
+  }
+
+  return $fields;
+}
+
+function visitor_tracking_inbound_code_get_request_keys() {
+  $settings = \Drupal::config('visitor_tracking_inbound_code.settings');
+
+  $values = explode(',', $settings->get('request_keys'));
+
+  $keys = [];
+
+  foreach ($values as $value) {
+    $key = trim($value);
+    $label = $key;
+
+    if (strpos($key, ':') !== FALSE) {
+      list($key, $label) = explode(':', $key);
+    }
+
+    $keys[$key] = t($label);
+  }
+
+  return $keys;
+}
+
+function visitor_tracking_inbound_code_get_active() {
+  /** @var \Drupal\user\PrivateTempStoreFactory $private_tempstore_factory */
+  $private_tempstore_factory = \Drupal::service('user.private_tempstore');
+  $tempstore = $private_tempstore_factory->get('visitor_tracking_inbound_code');
+  $codes = $tempstore->get('tracking_codes');
+
+  if (empty($codes)) {
+    $codes = [];
+  }
+
+  return $codes;
+}

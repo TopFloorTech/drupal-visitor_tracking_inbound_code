@@ -1,0 +1,5 @@
+name: Visitor Tracking - Inbound Code
+type: module
+description: Allows the persistent tracking of inbound URL parameters for visitors.
+core: 8.x
+package: Visitor Tracking

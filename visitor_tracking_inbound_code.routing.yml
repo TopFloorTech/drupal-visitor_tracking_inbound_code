@@ -1,0 +1,7 @@
+visitor_tracking_inbound_code.admin_settings:
+  path: /admin/config/people/inbound-tracking-codes
+  defaults:
+    _title: 'Inbound Tracking Codes'
+    _form: \Drupal\visitor_tracking_inbound_code\Form\SettingsForm
+  requirements:
+    _permission: 'administer visitor tracking inbound code'

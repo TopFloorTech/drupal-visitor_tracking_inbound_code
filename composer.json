@@ -1,0 +1,14 @@
+{
+  "name": "drupal/visitor_tracking_inbound_code",
+  "type": "drupal-module",
+  "description": "Allows the persistent tracking of inbound URL parameters for visitors.",
+  "keywords": ["Drupal"],
+  "license": "GPL-2.0+",
+  "homepage": "https://www.drupal.org/project/visitor_tracking_inbound_code",
+  "minimum-stability": "dev",
+  "support": {
+    "issues": "https://www.drupal.org/project/issues/visitor_tracking_inbound_code",
+    "source": "http://cgit.drupalcode.org/visitor_tracking_inbound_code"
+  },
+  "require": { }
+}

@@ -1,0 +1,5 @@
+services:
+  visitor_tracking_inbound_code:
+    class: Drupal\visitor_tracking_inbound_code\EventSubscriber\InboundCodeSubscriber
+    tags:
+      - { name: event_subscriber }
