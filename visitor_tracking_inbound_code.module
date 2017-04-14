@@ -58,7 +58,7 @@ function visitor_tracking_inbound_code_fill_fields(\Drupal\Core\Entity\Fieldable
       '#request_keys' => visitor_tracking_inbound_code_get_request_keys(),
     ];
     /** @var \Drupal\Core\Render\Markup $markup */
-    $markup = $renderer->render($value);
+    $markup = $renderer->renderPlain($value);
     $value = [0 => ['value' => $markup]];
 
     foreach ($fields as $field_name) {
