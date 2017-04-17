@@ -129,13 +129,21 @@ function visitor_tracking_inbound_code_get_request_keys() {
 }
 
 function visitor_tracking_inbound_code_get_active() {
-  /** @var \Drupal\user\PrivateTempStoreFactory $private_tempstore_factory */
-  $private_tempstore_factory = \Drupal::service('user.private_tempstore');
-  $tempstore = $private_tempstore_factory->get('visitor_tracking_inbound_code');
-  $codes = $tempstore->get('tracking_codes');
+  /** @var \Drupal\Core\Session\AccountProxyInterface $current_user */
+  $current_user = \Drupal::service('current_user');
 
-  if (empty($codes)) {
-    $codes = [];
+  $codes = [];
+
+  if ($current_user instanceof \Drupal\Core\Session\AccountProxyInterface) {
+    /** @var \Drupal\user\PrivateTempStoreFactory $private_tempstore_factory */
+    $private_tempstore_factory = \Drupal::service('user.private_tempstore');
+    $tempstore = $private_tempstore_factory->get('visitor_tracking_inbound_code');
+    $tempstore->getMetadata('tracking_codes');
+    $codes = $tempstore->get('tracking_codes');
+
+    if (empty($codes)) {
+      $codes = [];
+    }
   }
 
   return $codes;
