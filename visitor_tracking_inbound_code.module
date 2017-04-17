@@ -131,14 +131,12 @@ function visitor_tracking_inbound_code_get_request_keys() {
 function visitor_tracking_inbound_code_get_active() {
   /** @var \Drupal\Core\Session\AccountProxyInterface $current_user */
   $current_user = \Drupal::service('current_user');
-
   $codes = [];
 
-  if ($current_user instanceof \Drupal\Core\Session\AccountProxyInterface) {
+  if ($current_user instanceof \Drupal\Core\Session\AccountProxyInterface && !is_null(\Drupal::requestStack()->getCurrentRequest()->getSession())) {
     /** @var \Drupal\user\PrivateTempStoreFactory $private_tempstore_factory */
     $private_tempstore_factory = \Drupal::service('user.private_tempstore');
     $tempstore = $private_tempstore_factory->get('visitor_tracking_inbound_code');
-    $tempstore->getMetadata('tracking_codes');
     $codes = $tempstore->get('tracking_codes');
 
     if (empty($codes)) {
