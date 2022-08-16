@@ -34,7 +34,7 @@ class InboundCodeSubscriber implements EventSubscriberInterface {
       }
 
       /** @var \Drupal\user\PrivateTempStoreFactory $private_tempstore_factory */
-      $private_tempstore_factory = \Drupal::service('user.private_tempstore');
+      $private_tempstore_factory = \Drupal::service('tempstore.private');
       $tempstore = $private_tempstore_factory->get('visitor_tracking_inbound_code');
 
       $codes = $tempstore->get('tracking_codes');
