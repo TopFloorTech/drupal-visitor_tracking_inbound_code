@@ -5,7 +5,10 @@
  * Contains visitor_tracking_inbound_code.module.
  */
 
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Entity\FieldableEntityInterface;
 use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Core\Session\AccountProxyInterface;
 
 // @todo Support visitor_tracking module as a data plugin.
 
@@ -28,10 +31,10 @@ function visitor_tracking_inbound_code_help($route_name, RouteMatchInterface $ro
 /**
  * Implements hook_entity_presave().
  */
-function visitor_tracking_inbound_code_entity_presave(Drupal\Core\Entity\EntityInterface $entity) {
+function visitor_tracking_inbound_code_entity_presave(EntityInterface $entity) {
   $fields = visitor_tracking_inbound_code_get_tracking_fields();
 
-  if ($entity instanceof \Drupal\Core\Entity\FieldableEntityInterface) {
+  if ($entity instanceof FieldableEntityInterface) {
     $fill_fields = [];
 
     if (array_key_exists($entity->getEntityTypeId(), $fields)) {
@@ -46,7 +49,7 @@ function visitor_tracking_inbound_code_entity_presave(Drupal\Core\Entity\EntityI
   }
 }
 
-function visitor_tracking_inbound_code_fill_fields(\Drupal\Core\Entity\FieldableEntityInterface $entity, $fields) {
+function visitor_tracking_inbound_code_fill_fields(FieldableEntityInterface $entity, $fields) {
   $tracking_codes = visitor_tracking_inbound_code_get_active();
 
   if (!empty($tracking_codes)) {
@@ -133,8 +136,8 @@ function visitor_tracking_inbound_code_get_active() {
   $current_user = \Drupal::service('current_user');
   $codes = [];
 
-  if ($current_user instanceof \Drupal\Core\Session\AccountProxyInterface && !is_null(\Drupal::requestStack()->getCurrentRequest()->getSession())) {
-    /** @var \Drupal\user\PrivateTempStoreFactory $private_tempstore_factory */
+  if ($current_user instanceof AccountProxyInterface && !is_null(\Drupal::requestStack()->getCurrentRequest()->getSession())) {
+    /** @var \Drupal\Core\TempStore\PrivateTempStore $private_tempstore_factory */
     $private_tempstore_factory = \Drupal::service('tempstore.private');
     $tempstore = $private_tempstore_factory->get('visitor_tracking_inbound_code');
     $codes = $tempstore->get('tracking_codes');

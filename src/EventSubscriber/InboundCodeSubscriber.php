@@ -2,14 +2,13 @@
 
 namespace Drupal\visitor_tracking_inbound_code\EventSubscriber;
 
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\KernelEvents;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class InboundCodeSubscriber implements EventSubscriberInterface {
 
-  public function checkForRedirection(GetResponseEvent $event) {
+  public function checkForRedirection(RequestEvent $event) {
     $request_keys = visitor_tracking_inbound_code_get_request_keys();
 
     $set = [];
@@ -33,7 +32,7 @@ class InboundCodeSubscriber implements EventSubscriberInterface {
         $event->getRequest()->getSession()->start();
       }
 
-      /** @var \Drupal\user\PrivateTempStoreFactory $private_tempstore_factory */
+      /** @var \Drupal\Core\TempStore\PrivateTempStore $private_tempstore_factory */
       $private_tempstore_factory = \Drupal::service('tempstore.private');
       $tempstore = $private_tempstore_factory->get('visitor_tracking_inbound_code');
 
@@ -54,7 +53,7 @@ class InboundCodeSubscriber implements EventSubscriberInterface {
    */
   public static function getSubscribedEvents() {
     $events = [];
-    $events[KernelEvents::REQUEST][] = array('checkForRedirection');
+    $events[KernelEvents::REQUEST][] = ['checkForRedirection'];
     return $events;
   }
 
